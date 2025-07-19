@@ -23,6 +23,7 @@ const ControlGameBlock = (props) => {
   const {
     gameChainId,
     gameContractAddress,
+    gameSummary,
     gameBackendSocket: {
       isConnected
     },
@@ -47,6 +48,10 @@ const ControlGameBlock = (props) => {
   
   const { addNotification } = useNotification()
   
+  const {
+    minBet = 0,
+    maxBet = 0
+  } = gameSummary
   
   const [ betAmount, setBetAmount ] = useState<number | string>('')
   const handleChangeBet = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +160,11 @@ const ControlGameBlock = (props) => {
   const handleStartGame = () => {
     const value = Number(betAmount);
     console.log('>> playerInfo', playerInfo)
-    if (value > 0 && new BigNumber(toWei(value, tokenInfo.decimals)).isLessThanOrEqualTo(playerInfo.depositAmount)) {
+    if (value > 0
+      && new BigNumber(toWei(value, tokenInfo.decimals)).isLessThanOrEqualTo(playerInfo.depositAmount)
+      && new BigNumber(toWei(value, tokenInfo.decimals)).isGreaterThanOrEqualTo(minBet)
+      && new BigNumber(toWei(value, tokenInfo.decimals)).isLessThanOrEqualTo(maxBet)
+    ) {
       setIsJoing(true)
       getNextRoundId({
         chainId: gameChainId,
@@ -220,7 +229,9 @@ const ControlGameBlock = (props) => {
     return (
       <>
         <div>
-          <label htmlFor="betAmount" className="block text-sm mb-2">Bet Amount</label>
+          <label htmlFor="betAmount" className="block text-sm mb-2">
+            {`Bet Amount (Min: ${fromWei(minBet, tokenInfo.decimals)}, Max: ${fromWei(maxBet, tokenInfo.decimals)})`}
+          </label>
           <div className="relative">
             <input id="betAmount" type="number" min="0.0001" step="0.0001"
               value={betAmount}

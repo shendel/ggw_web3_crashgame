@@ -68,6 +68,7 @@ export default function Admin(props) {
       case 'burnAndStakePercent':
       case 'minMultiplier':
       case 'maxMultiplier':
+      case 'roundCoolDown':
       case 'minBet':
       case 'maxBet':
         if (statKey == 'burnAndStakeAddress') {
@@ -126,6 +127,19 @@ export default function Admin(props) {
           }
           editContractCheckError = (value) => {
             if (Number(value) < 0) return 'Value must be greater than zero'
+            return false
+          }
+        }
+        if (statKey == 'roundCoolDown') {
+          editContractTitle = 'Edit Round Count down interval'
+          editContractValue = gameStats.roundCoolDown
+          editContractDescription = 'Enter new count down interval'
+          editContractFunction = 'setRoundCoolDown'
+          editContractBeforeSave = (value) => {
+            return value
+          }
+          editContractCheckError = (value) => {
+            if (Number(value) < 5) return 'Value must be greater than 5'
             return false
           }
         }

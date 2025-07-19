@@ -42,12 +42,12 @@ const AdminGameStats: React.FC<AdminGameStatsProps> = (props) => {
       clickable: true
     },
     {
-      title: 'Total Won Amount',
-      value: stats?.totalWonAmount ? formatTokenAmount(stats.totalWonAmount) : '—',
+      title: 'Total Bets Amount',
+      value: stats?.totalBetsAmount ? formatTokenAmount(stats.totalBetsAmount) : '—',
     },
     {
-      title: 'Total Lost Amount',
-      value: stats?.totalLostAmount ? formatTokenAmount(stats.totalLostAmount) : '—',
+      title: 'Total CashOut Amount',
+      value: stats?.totalCashOutAmount ? formatTokenAmount(stats.totalCashOutAmount) : '—',
     },
     {
       title: 'Game Bank',
@@ -93,6 +93,12 @@ const AdminGameStats: React.FC<AdminGameStatsProps> = (props) => {
     {
       title: 'Pending Payouts',
       value: stats?.pendingBank ? formatTokenAmount(stats.pendingBank) : '—',
+    },
+    {
+      title: 'Count Down',
+      value: stats?.roundCoolDown ? stats.roundCoolDown : '-',
+      key: 'roundCoolDown',
+      clickable: true
     },
     {
       title: 'Min Multiplier',

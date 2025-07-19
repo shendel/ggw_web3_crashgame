@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { useInjectedWeb3 } from '@/web3/InjectedWeb3Provider'
 
 import fetchGameToken from '@/helpers_crashgame/fetchGameToken'
+import fetchSummaryGameInfo from '@/helpers_crashgame/fetchSummaryGameInfo'
+
 import fetchPlayerInfo from '@/helpers_crashgame/fetchPlayerInfo'
 import BigNumber from "bignumber.js"
 
@@ -16,6 +18,7 @@ const CrashGameContext = createContext({
   isFetching: true,
   isError: false,
   fetchInfo: () => {},
+  gameSummary: {},
   bankAmount: 0,
   playerDeposit: 0,
   tokenInfo: {},
@@ -78,6 +81,9 @@ export default function CrashGameProvider(props) {
   const [ activePlayerCashOutMultiplier, setActivePlayerCashOutMultiplier ] = useState(false)
   const [ userRoundId, setUserRoundId ] = useState(false)
   const [ lastRoundId, setLastRoundId ] = useState(false)
+  const [ gameSummary, setGameSummary ] = useState(false)
+  
+  
   
   
   const [ gameStatus, setGameStatus ] = useState({
@@ -108,6 +114,15 @@ export default function CrashGameProvider(props) {
   }
   
   useEffect(() => {
+    fetchSummaryGameInfo({
+      chainId,
+      address: contractAddress,
+    }).then((answer) => {
+      setGameSummary(answer)
+    }).catch((err) => {})
+  }, [ chainId, contractAddress ])
+  
+  useEffect(() => {
     if (activePlayerBet && activePlayerCashOutMultiplier) {
       setActivePlayerCashOut(
         new BigNumber(activePlayerBet).multipliedBy(
@@ -126,7 +141,13 @@ export default function CrashGameProvider(props) {
   }, [ lastRoundId ])
   /* Connect to WS BackEnd */
   const connectWebSocket = () => {
-    const ws = new WebSocket(backendWS);
+    let ws = null
+    try {
+      ws = new WebSocket(backendWS);
+    } catch (err) {
+      console.log('>>> Fail Connect WS', err)
+      return
+    }
     setWsState(prev => ({ ...prev, isConnecting: true, error: null }));
 
     let reconnectTimeout = null;
@@ -411,6 +432,7 @@ export default function CrashGameProvider(props) {
       gameBackendWS: backendWS,
       gameBackendSocket: wsState,
       contractInfo,
+      gameSummary,
       isError,
       isFetching,
       fetchInfo,

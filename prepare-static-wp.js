@@ -6,6 +6,8 @@ const root_folder = './out'
 const _extenstions = ['*.html','*.js','*.css']
 
 console.log('Prepare engine')
+const dev_prefix = '' //'/wallet'
+
 fsExtra.move(root_folder + '/_next/', root_folder + '/engine/', err => {
   if(err) return console.error(err);
   console.log('Make engine success!');
@@ -20,9 +22,9 @@ fsExtra.move(root_folder + '/_next/', root_folder + '/engine/', err => {
           const content = readFileSync(file, 'utf8');
 
           let newContent = content.replaceAll('/_NEXT_GEN_APP', '');
-          newContent = newContent.replaceAll('/_next/','/wp-content/plugins/FlipCoinGame/vendor/engine/');
-          newContent = newContent.replaceAll('"./assets/', '"/wp-content/plugins/FlipCoinGame/vendor/assets/');
-          newContent = newContent.replaceAll('"/assets/', '"/wp-content/plugins/FlipCoinGame/vendor/assets/');
+          newContent = newContent.replaceAll('/_next/',`${dev_prefix}/wp-content/plugins/Web3CrashGame/vendor/engine/`);
+          newContent = newContent.replaceAll('"./assets/', `"${dev_prefix}/wp-content/plugins/Web3CrashGame/vendor/assets/`);
+          newContent = newContent.replaceAll('"/assets/', `"${dev_prefix}/wp-content/plugins/Web3CrashGame/vendor/assets/`);
 
           console.log(file);
           writeFileSync(file, newContent);

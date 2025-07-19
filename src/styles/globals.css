@@ -330,7 +330,8 @@ BUTTON.connectWalletButton {
   position: absolute;
   left: 0px;
   top: 100%;
-  padding: 0.1rem
+  padding: 0.1rem;
+  z-index: 10;
 }
 .ggw_main_menu LI.menu-item-has-children>UL>LI {
   display: block;
