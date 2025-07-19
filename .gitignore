@@ -1,0 +1,6 @@
+node_modules/
+build/
+out/
+package.json
+contracts/.deps/*
+contracts/artifacts/*
