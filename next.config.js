@@ -12,16 +12,13 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     NODE_ENV: process.env.NODE_ENV,
-    //CHAIN_ID: 97, // 97,
-    
-    //GAME_CONTRACT: "0x801B2B8b7B86147C88aA346378e626E5481b5e9d", // "0x5eeb7cee07a7aB072Fbf70f1FEc8793C276f2CB1",
-    /*
-    TITLE: "GGWorld Crash Game",
-    RANDOM_GENERATOR: "0xa2d8526d12fa0a41007d2b5f33da81d0d6716fa9", // "0x33D44b8715349b26B5E16066647a9294F724a65c",
-    TOKEN_ADDRESS: "0x1f832e8508bD9E95B4F65d252EAc40E70Cfd7A2A",
-    
-    */
-    NEXT_PUBLIC_PROJECT_ID: "a23677c4af3139b4eccb52981f76ad94"
+    CHAIN_ID: 97, // 56, 
+    GAME_CONTRACT: "0xe7C4287a22a24D0f9B1e8ed76fA24c68F3226252", 
+    DEPOSIT_CONTRACT: "0x0CE4B81b7693e444174AF6769dE7681bF5E2B82e",
+    TITLE: "GG World Crash Game – Favorably Fair Crypto Game",
+    NEXT_PUBLIC_PROJECT_ID: "b87a3c44755d7f346d350330ca573223",
+    BACKEND: 'http://localhost:4100',
+    BACKEND_WS: 'ws://localhost:4100', //'wss://ws.gg.world/', //'ws://localhost:4100', //'wss://test.energy-blockchain.ru/'
   }
 }
 

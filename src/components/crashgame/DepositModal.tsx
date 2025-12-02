@@ -11,7 +11,8 @@ import SwitchChainButton from '@/components/common/SwitchChainButton'
 
 import {
   MAINNET_CHAIN_ID,
-  GAME_CONTRACT
+  GAME_CONTRACT,
+  DEPOSIT_CONTRACT
 } from '@/config'
 
 const DepositModal= (props) => {
@@ -71,7 +72,7 @@ const DepositModal= (props) => {
         activeWallet: injectedAccount,
         activeWeb3: injectedWeb3,
         tokenAddress: tokenInfo.tokenAddress,
-        approveFor: GAME_CONTRACT,
+        approveFor: DEPOSIT_CONTRACT,
         weiAmount: toWei(amount, tokenInfo.decimals),
         onTrx: (txHash) => {
           addNotification('info', 'Approving transaction', getTransactionLink(MAINNET_CHAIN_ID, txHash), getShortTxHash(txHash))
@@ -98,7 +99,7 @@ const DepositModal= (props) => {
       addNotification('info', 'Depositing. Confirm transaction')
       depositTokens({
         activeWeb3: injectedWeb3,
-        address: GAME_CONTRACT,
+        address: DEPOSIT_CONTRACT,
         amount: `0x` + new BigNumber(toWei(amount, tokenInfo.decimals)).toString(16),
         onTrx: (txHash) => {
           addNotification('info', 'Deposit transaction', getTransactionLink(MAINNET_CHAIN_ID, txHash), getShortTxHash(txHash))

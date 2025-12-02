@@ -30,7 +30,7 @@ console.log('>> fetchGameToken', options)
           func: 'getTokenInfo', args: [ (playerAddress) ? playerAddress : ZERO_ADDRESS ]
         },
         bankAmount: {
-          func: 'bankAmount'
+          func: 'gameBank'
         }
       }
     }).then((mcAnswer) => {

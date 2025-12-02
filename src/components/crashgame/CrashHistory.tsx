@@ -4,7 +4,9 @@ import { useCrashGame } from '@/contexts/CrashGameContext'
 import fetchGames from '@/helpers_crashgame/fetchGames'
 import fetchPlayerGames from '@/helpers_crashgame/fetchPlayerGames'
 import { fromWei } from '@/helpers/wei'
+import { useConfirmationModal } from '@/components/ConfirmationModal'
 import BigNumber from "bignumber.js"
+import GameInfoModal from '@/components/crashgame/GameInfoModal'
 
 const CrashHistory = () => {
   const {
@@ -18,6 +20,8 @@ const CrashHistory = () => {
     injectedAccount
   } = useInjectedWeb3()
 
+  const { openModal } = useConfirmationModal()
+  
   const [viewMode, setViewMode] = useState('all'); // 'all' или 'my'
 
   const [ rounds, setRounds ] = useState([])
@@ -58,6 +62,17 @@ const CrashHistory = () => {
     })
   }, [ gameChainId, gameContractAddress, lastRoundId ])
 
+  const handleOpenGameInfo = (gameInfo) => {
+    openModal({
+      title: `Round Provably Fair Info`,
+      hideBottomButtons: true,
+      fullWidth: true,
+      id: 'GAME_INFO',
+      content: (
+        <GameInfoModal gameInfo={gameInfo} />
+      )
+    })
+  }
   return (
     <section className="bg-gray-900/60 border border-white/5 rounded-2xl p-6 shadow-xl">
       {/* Заголовок */}
@@ -115,7 +130,11 @@ const CrashHistory = () => {
                 
                 const isWon = new BigNumber(cashOutAmount).isGreaterThan(0)
                 return (
-                  <tr key={roundId} className="border-b border-gray-800 font-mono">
+                  <tr
+                    key={roundId}
+                    className="border-b border-gray-800 font-mono hover:bg-gray-600 cursor-pointer"
+                    onClick={() => { handleOpenGameInfo(round) }}
+                  >
                     <td>{roundId}</td>
                     <td>
                       {new BigNumber(fromWei(betAmount, tokenInfo.decimals)).toFixed(2)}
@@ -163,7 +182,11 @@ const CrashHistory = () => {
                   cashOutAmount
                 } = round
                 return (
-                  <tr key={roundId} className="border-b border-gray-800 font-mono ">
+                  <tr
+                    key={roundId}
+                    className="border-b border-gray-800 font-mono  hover:bg-gray-600 cursor-pointer"
+                    onClick={() => { handleOpenGameInfo(round) }}
+                  >
                     <td>{roundId}</td>
                     <td>{playersCount}</td>
                     <td>

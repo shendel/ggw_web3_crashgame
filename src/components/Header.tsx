@@ -43,7 +43,8 @@ const Header = () => {
   
   const isOwner = false
 
-  const menuItems = window.SO_FLIPCOIN_MENU || [
+  const menuItems = window.SO_FLIPCOIN_MENU || [{"title":"Games","url":"\/","childs":[{"title":"Pick 2 Mini","url":"\/lottery\/pick2mini"},{"title":"Pick 2","url":"\/lottery\/pick2\/"},{"title":"Pick 6","url":"\/lottery\/pick6\/"},{"title":"CoinFlip","url":"\/coinflip"}]},{"title":"Provably fair","url":"https:\/\/gg.world\/provably-fair\/"},{"title":"Roadmap","url":"\/"},{"title":"Stake & Earn","url":"\/"},{"title":"Token","url":"\/"},{"title":"Cooperation","url":"\/"},{"title":"About","url":"\/","childs":[{"title":"Achievements","url":"\/"},{"title":"History","url":"\/"}]}] 
+  let t = [
     {
       title: 'Home',
       url: '/'

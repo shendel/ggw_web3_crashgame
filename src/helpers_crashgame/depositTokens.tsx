@@ -1,4 +1,4 @@
-import CrashGameJson from "@/abi/CrashGame.json"
+import FlipGameJson from "@/abi/GGWDeposit.json"
 import callContractMethod from '@/helpers/callContractMethod'
 
 const depositTokens = (options) => {
@@ -13,7 +13,7 @@ const depositTokens = (options) => {
     onFinally = () => {}
   } = options
   
-  const contract = new activeWeb3.eth.Contract(CrashGameJson.abi, address)
+  const contract = new activeWeb3.eth.Contract(FlipGameJson.abi, address)
   
   return callContractMethod({
     activeWeb3,

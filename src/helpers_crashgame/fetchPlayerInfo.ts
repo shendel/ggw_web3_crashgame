@@ -29,17 +29,29 @@ const fetchPlayerInfo = (options) => {
         playerInfo: {
           func: 'players', args: [ playerAddress ]
         },
+        depositAmount: {
+          func: 'getUserDeposit', args: [ playerAddress ]
+        },
         bankAmount: {
-          func: 'bankAmount'
+          func: 'gameBank'
         }
       }
     }).then((mcAnswer) => {
+      const {
+        playerInfo,
+        depositAmount
+      } = mcAnswer
+      
       console.log('>>> fetchPlayerInfo', mcAnswer)
       resolve({
         chainId,
         address,
         playerAddress,
         ...mcAnswer,
+        playerInfo: {
+          ...playerInfo,
+          depositAmount
+        }
       })
 
     }).catch((err) => {

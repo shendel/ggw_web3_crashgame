@@ -9,7 +9,8 @@ import withdrawTokens from '@/helpers_crashgame/withdrawTokens'
 import SwitchChainButton from '@/components/common/SwitchChainButton'
 import {
   MAINNET_CHAIN_ID,
-  GAME_CONTRACT
+  GAME_CONTRACT,
+  DEPOSIT_CONTRACT
 } from '@/config'
 
 const WithdrawModal= (props) => {
@@ -37,7 +38,7 @@ const WithdrawModal= (props) => {
       addNotification('info', 'Withdrawing deposit. Confirm transaction')
       withdrawTokens({
         activeWeb3: injectedWeb3,
-        address: GAME_CONTRACT,
+        address: DEPOSIT_CONTRACT,
         amount: `0x` + new BigNumber(toWei(amount, tokenInfo.decimals)).toString(16),
         onTrx: (txHash) => {
           addNotification('info', 'Withdraw transaction', getTransactionLink(MAINNET_CHAIN_ID, txHash), getShortTxHash(txHash))

@@ -5,6 +5,7 @@ import StartGameButton from '@/components/crashgame/StartGameButton'
 import CancelBetButton from '@/components/crashgame/CancelBetButton'
 import CrashedButton from '@/components/crashgame/CrashedButton'
 import CashedOutButton from '@/components/crashgame/CashedOutButton'
+import LoginButton from '@/components/crashgame/LoginButton'
 
 import { useCrashGame } from '@/contexts/CrashGameContext'
 import { useNotification } from "@/contexts/NotificationContext"
@@ -92,17 +93,16 @@ const ControlGameBlock = (props) => {
   }, [isCashOut]);
   
   useEffect(() => {
-    if (isConnected && playerInfo && playerInfo.playerId) {
-      checkConnectedToQuery({ playerId: playerInfo.playerId })
+    if (isConnected && playerInfo && injectedAccount) {
+      checkConnectedToQuery({ playerAddress: injectedAccount })
       const callbackJoinGame = (data) => {
         const {
-          playerId,
           userAddress,
           roundId,
           isCashedOut,
           cashOutMultiplier,
         } = data
-        if (playerId == playerInfo.playerId) {
+        if (userAddress.toLowerCase() == injectedAccount.toLowerCase()) {
           console.log('[Reconnect]', data)
           setIsJoing(false)
           setIsJoined(true)
@@ -175,10 +175,9 @@ const ControlGameBlock = (props) => {
         
         SignMessage({
           activeWeb3: injectedWeb3,
-          userAddress: injectedAccount,
+          userAddress: injectedAccount.toLowerCase(),
           signedData: [
-            { t: 'uint256', v: playerInfo.playerId },
-            { t: 'address', v: injectedAccount },
+            { t: 'address', v: injectedAccount.toLowerCase() },
             { t: 'uint256', v: nextRoundId },
             { t: 'uint256', v: toWei(value, tokenInfo.decimals) }
           ]
@@ -187,9 +186,8 @@ const ControlGameBlock = (props) => {
           try {
             setIsJoing(false)
             joinGame({
-              playerId: playerInfo.playerId,
               roundId: nextRoundId,
-              userAddress: injectedAccount,
+              userAddress: injectedAccount.toLowerCase(),
               betAmount: toWei(value, tokenInfo.decimals),
               messageHash,
               signature
@@ -225,6 +223,14 @@ const ControlGameBlock = (props) => {
     setUserRoundId(false)
   }
 
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false)
+  const [ loginInfo, setLoginInfo ] = useState(false)
+  const handleOnLogin = (loginInfo) => {
+    console.log('>> login info', loginInfo)
+    setLoginInfo(loginInfo)
+    setIsLoggedIn(true)
+  }
+  
   const renderMakeBet = () => {
     return (
       <>
@@ -260,39 +266,45 @@ const ControlGameBlock = (props) => {
           <div>CONNECTING</div>
         ) : (
           <>
-            {isJoined && joinData ? (
+            {(!isLoggedIn) ? (
+              <LoginButton onLogin={handleOnLogin} />
+            ) : (
               <>
-                {isCashOut ? (
-                  <CashedOutButton
-                    joinData={joinData}
-                    multiplier={cashOutMultiplier}
-                    onClick={handleTryAgain}
-                  />
-                ) : (
+                {isJoined && joinData ? (
                   <>
-                    {gameStatus.roundId !== userRoundId && !isCrashed ? (
-                      <>
-                        <CancelBetButton
-                          betAmount={joinData.betAmount}
-                          tokenInfo={tokenInfo}
-                          onClick={handleCancelBet}
-                        />
-                      </>
+                    {isCashOut ? (
+                      <CashedOutButton
+                        joinData={joinData}
+                        multiplier={cashOutMultiplier}
+                        onClick={handleTryAgain}
+                      />
                     ) : (
                       <>
-                        {gameStatus.isRunning && gameStatus.roundId == userRoundId && (
-                          <StopGameButton onClick={handleCashOutBet} joinData={joinData} />
-                        )}
-                        {isCrashed && (
-                          <CrashedButton multiplier={crashMultiplier} onClick={handleTryAgain}/>
+                        {gameStatus.roundId !== userRoundId && !isCrashed ? (
+                          <>
+                            <CancelBetButton
+                              betAmount={joinData.betAmount}
+                              tokenInfo={tokenInfo}
+                              onClick={handleCancelBet}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {gameStatus.isRunning && gameStatus.roundId == userRoundId && (
+                              <StopGameButton onClick={handleCashOutBet} joinData={joinData} />
+                            )}
+                            {isCrashed && (
+                              <CrashedButton multiplier={crashMultiplier} onClick={handleTryAgain}/>
+                            )}
+                          </>
                         )}
                       </>
                     )}
                   </>
+                ) : (
+                  <>{renderMakeBet()}</>
                 )}
               </>
-            ) : (
-              <>{renderMakeBet()}</>
             )}
           </>
         )}

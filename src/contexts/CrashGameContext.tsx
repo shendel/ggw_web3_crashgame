@@ -34,6 +34,8 @@ const CrashGameContext = createContext({
   removeMessageListener: () => {},
   
   gameStatus: {},
+  generatedHash: false,
+  generatedSalt: false,
   
   joinGame: () => {},
   checkConnectedToQuery: () => {},
@@ -82,6 +84,9 @@ export default function CrashGameProvider(props) {
   const [ userRoundId, setUserRoundId ] = useState(false)
   const [ lastRoundId, setLastRoundId ] = useState(false)
   const [ gameSummary, setGameSummary ] = useState(false)
+  
+  const [ generatedHash, setGeneratedHash ] = useState(false)
+  const [ generatedSalt, setGeneratedSalt ] = useState(false)
   
   
   
@@ -205,6 +210,7 @@ export default function CrashGameProvider(props) {
               multiplier: 1
             }
           })
+          
           break;
         case 'countdown':
           setGameStatus((prev) => {
@@ -217,6 +223,11 @@ export default function CrashGameProvider(props) {
           })
           break;
         case 'pending':
+          const {
+            generatedHash
+          } = message
+          setGeneratedHash(generatedHash)
+          setGeneratedSalt(false)
           setGameStatus({
             isCountDown: false,
             countdown: 0,
@@ -229,6 +240,7 @@ export default function CrashGameProvider(props) {
           })
           break;
         case 'multiplier-start':
+          setNeedUpdatePlayerInfo(true)
         case 'multiplier-update':
           setGameStatus((prev) => {
             return {
@@ -245,6 +257,10 @@ export default function CrashGameProvider(props) {
           })
           break;
         case 'multiplier-crash':
+          const {
+            generatedSalt
+          } = message
+          setGeneratedSalt(generatedSalt)
           setGameStatus((prev) => {
             return {
               isCountDown: false,
@@ -316,18 +332,17 @@ export default function CrashGameProvider(props) {
   const checkConnectedToQuery = (options) => {
     
     const {
-      playerId
+      playerAddress
     } = options
-    console.log('>>> checkConnectedToQuery', playerId)
+    console.log('>>> checkConnectedToQuery', playerAddress, options )
     wsState.socket.send(JSON.stringify({
       type: 'player-reconnect',
-      playerId,
+      playerAddress: playerAddress.toLowerCase(),
     }))
   }
   
   const leaveGame = (options) => {
     const {
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -336,7 +351,6 @@ export default function CrashGameProvider(props) {
     } = options
     wsState.socket.send(JSON.stringify({
       type: 'player-leave-game',
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -346,7 +360,6 @@ export default function CrashGameProvider(props) {
   }
   const cashOutBet = (options) => {
     const {
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -355,7 +368,6 @@ export default function CrashGameProvider(props) {
     } = options
     wsState.socket.send(JSON.stringify({
       type: 'player-cash-out',
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -365,7 +377,6 @@ export default function CrashGameProvider(props) {
   }
   const joinGame = (options) => {
     const {
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -375,7 +386,6 @@ export default function CrashGameProvider(props) {
     
     wsState.socket.send(JSON.stringify({
       type: 'join-game',
-      playerId,
       roundId,
       userAddress,
       betAmount,
@@ -454,6 +464,8 @@ export default function CrashGameProvider(props) {
       cashOutBet,
       /* ------------------ */
       gameStatus,
+      generatedHash,
+      generatedSalt,
     }}>
       {children}
     </CrashGameContext.Provider>
