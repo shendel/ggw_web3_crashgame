@@ -105,6 +105,7 @@ interface IGGWDeposit {
         uint256 pendingBankAmount;
         uint256 burnPercent;        // pt 100 = 100%
         uint256 stakePercent;       // burnPercent+stakePercent = 100
+        uint256 gasPercent;
         string description;
     }
     function getUserDeposit(address userAddress) external view returns (uint256);

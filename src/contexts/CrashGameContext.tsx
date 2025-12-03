@@ -366,6 +366,7 @@ export default function CrashGameProvider(props) {
       messageHash,
       signature
     } = options
+    console.log('>>> send cashOutBet', options)
     wsState.socket.send(JSON.stringify({
       type: 'player-cash-out',
       roundId,

@@ -1,6 +1,6 @@
 {
   "name": "GGWorldCrashGame",
-  "address": "0x44cf478749742d2b8b94804458f1b2b803e5e56b",
+  "address": "0x937d49fb13df87b07484587098209e5cd466c9db",
   "abi": [
     {
       "inputs": [
@@ -1409,5 +1409,5 @@
     }
   ],
   "filePath": "electron/CrashGame.sol",
-  "pinnedAt": 1763814586291
+  "pinnedAt": 1764691535980
 }

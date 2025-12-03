@@ -65,7 +65,12 @@ const ControlGameBlock = (props) => {
   const handleStopGame = () => {
 
   }
-  
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false)
+  const [ loginInfo, setLoginInfo ] = useState(false)
+  const handleOnLogin = (loginInfo) => {
+    setLoginInfo(loginInfo)
+    setIsLoggedIn(true)
+  }
   const [ isConnectingGame , setIsConnectingGame ] = useState(true)
   const [ isJoining, setIsJoing ] = useState(false)
   const [ isJoined, setIsJoined ] = useState(false)
@@ -171,34 +176,22 @@ const ControlGameBlock = (props) => {
         address: gameContractAddress
       }).then(({ nextRoundId }) => {
         console.log('>>> next round id', nextRoundId)
-        addNotification('info', 'Registering in game round. Sign message')
-        
-        SignMessage({
-          activeWeb3: injectedWeb3,
-          userAddress: injectedAccount.toLowerCase(),
-          signedData: [
-            { t: 'address', v: injectedAccount.toLowerCase() },
-            { t: 'uint256', v: nextRoundId },
-            { t: 'uint256', v: toWei(value, tokenInfo.decimals) }
-          ]
-        }).then((data) => {
-          const { signature, messageHash } = data
-          try {
-            setIsJoing(false)
-            joinGame({
-              roundId: nextRoundId,
-              userAddress: injectedAccount.toLowerCase(),
-              betAmount: toWei(value, tokenInfo.decimals),
-              messageHash,
-              signature
-            })
-          } catch(err) {
-            setIsJoing(false)
-          }
-        }).catch((err) => {
+        addNotification('info', 'Registering in game round.')
+
+        const { signature, messageHash } = loginInfo
+        try {
           setIsJoing(false)
-          console.log('Fail sign', err)
-        })
+          joinGame({
+            roundId: nextRoundId,
+            userAddress: injectedAccount.toLowerCase(),
+            betAmount: toWei(value, tokenInfo.decimals),
+            messageHash,
+            signature
+          })
+        } catch(err) {
+          setIsJoing(false)
+        }
+        
       }).catch((err) => {
         setIsJoing(false)
       })
@@ -206,13 +199,20 @@ const ControlGameBlock = (props) => {
   }
 
   const handleCancelBet = () => {
-    leaveGame(joinData)
+    leaveGame({
+      ...joinData,
+      ...loginInfo
+    })
     setIsJoined(false)
     setJoinData(false)
     setUserRoundId(false)
   }
   const handleCashOutBet = () => {
-    cashOutBet(joinData)
+    console.log('handleCashOutBet', joinData, loginInfo)
+    cashOutBet({
+      ...joinData,
+      ...loginInfo
+    })
   }
   
   const handleTryAgain = () => {
@@ -223,13 +223,7 @@ const ControlGameBlock = (props) => {
     setUserRoundId(false)
   }
 
-  const [ isLoggedIn, setIsLoggedIn ] = useState(false)
-  const [ loginInfo, setLoginInfo ] = useState(false)
-  const handleOnLogin = (loginInfo) => {
-    console.log('>> login info', loginInfo)
-    setLoginInfo(loginInfo)
-    setIsLoggedIn(true)
-  }
+  
   
   const renderMakeBet = () => {
     return (
